@@ -76,5 +76,5 @@ if __name__ == '__main__':
                  '--capture=sys',
                  'main.py',
                  '--clean-alluredir', '--alluredir=allure-results'])  # pytest命令
-    # os.system('allure serve allure-results/ -o allure_html/ --clean') #建立serve服务,打开默认浏览器
-    os.system('allure generate allure-results/ -o allure_html/ --clean')  #保存本地
+    os.system('allure serve allure-results/ -o allure_html/ --clean') #建立serve服务,打开默认浏览器
+    # os.system('allure generate allure-results/ -o allure_html/ --clean')  #保存本地
