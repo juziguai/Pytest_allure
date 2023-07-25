@@ -2,6 +2,7 @@ import requests, jsonpath, pytest, ast, os, allure, time, webbrowser, subprocess
 from xToolkit import xfile
 from string import Template
 from Utils.parameter_dict import parameter_dict
+
 """
 Created by: juzi
 Created time: 2023/6/5 1:17 
@@ -10,7 +11,6 @@ Purpose:
 # 读取测试用例文档
 testSuite = xfile.read("接口测试用例.xls").excel_to_dict(sheet=0)
 
-# print(testSuite)
 # 创建以时间戳命名的文件夹
 timestamp = time.strftime("%Y-%m-%d_%H%M%S", time.localtime())
 
@@ -72,14 +72,10 @@ def test_requests(case_info):
 
 
 if __name__ == '__main__':
-    # 创建文件夹
-    # os.makedirs(timestamp, exist_ok=True)
     # 运行pytest命令并指定保存结果的文件夹
     pytest_command = f"pytest -vs --capture=sys main.py --clean-alluredir --alluredir=allure-results/{timestamp}"
     subprocess.run(pytest_command, shell=True)
-
-    # os.system('allure serve allure-results/ -o allure_html/ --clean')
-    # 保存测试报告
+    # 保存pytest测试数据到allure-results/下
     serve_command = f"allure generate allure-results/{timestamp} -o allure_html/{timestamp}/ --clean"
     subprocess.run(serve_command, shell=True)
     # 打开浏览器运行测试报告
