@@ -1,8 +1,7 @@
-import requests, jsonpath, pytest, ast, os, allure
+import requests, jsonpath, pytest, ast, os, allure, time, webbrowser, subprocess
 from xToolkit import xfile
 from string import Template
 from Utils.parameter_dict import parameter_dict
-
 """
 Created by: juzi
 Created time: 2023/6/5 1:17 
@@ -11,8 +10,9 @@ Purpose:
 # 读取测试用例文档
 testSuite = xfile.read("接口测试用例.xls").excel_to_dict(sheet=0)
 
-
 # print(testSuite)
+# 创建以时间戳命名的文件夹
+timestamp = time.strftime("%Y-%m-%d_%H%M%S", time.localtime())
 
 
 # pytest装饰器 循环读取测试用例文档内容 自带循环 遍历数据  括号内的含义  变量名，数据
@@ -72,9 +72,16 @@ def test_requests(case_info):
 
 
 if __name__ == '__main__':
-    pytest.main(['-vs',
-                 '--capture=sys',
-                 'main.py',
-                 '--clean-alluredir', '--alluredir=allure-results'])  # pytest命令
-    os.system('allure serve allure-results/ -o allure_html/ --clean') #建立serve服务,打开默认浏览器
-    # os.system('allure generate allure-results/ -o allure_html/ --clean')  #保存本地
+    # 创建文件夹
+    # os.makedirs(timestamp, exist_ok=True)
+    # 运行pytest命令并指定保存结果的文件夹
+    pytest_command = f"pytest -vs --capture=sys main.py --clean-alluredir --alluredir=allure-results/{timestamp}"
+    subprocess.run(pytest_command, shell=True)
+
+    # os.system('allure serve allure-results/ -o allure_html/ --clean')
+    # 保存测试报告
+    serve_command = f"allure generate allure-results/{timestamp} -o allure_html/{timestamp}/ --clean"
+    subprocess.run(serve_command, shell=True)
+    # 打开浏览器运行测试报告
+    file_path = f"http://localhost:63342/接口自动化框架/allure_html/{timestamp}/index.html"  # 替换为你的index.html文件路径
+    webbrowser.open(file_path)
